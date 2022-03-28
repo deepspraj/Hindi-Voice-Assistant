@@ -18,6 +18,10 @@ actions:
 - utter_affirm
 - utter_deny
 
+slots:
+  symptom_list:
+    type: list
+
 responses:
   utter_greet:
   - text: |

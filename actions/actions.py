@@ -10,7 +10,8 @@
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
-
+from rasa_sdk.events import SlotSet
+from helpers.SymptomsDiagnosis import SymptomsDiagnosis
 
 # class ActionHelloWorld(Action):
 #
@@ -26,15 +27,76 @@ from rasa_sdk.executor import CollectingDispatcher
 #         return []
 
 
+diagnosis_object = SymptomsDiagnosis()
+diagnosis_object.train()
+
+symptoms_suggested_so_far = []
+
+
 class ActionSymptomsTracker(Action):
 
     def name(self) -> Text:
         return "action_symptoms_tracker"
         
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        dispatcher.utter_message(text="Hello World!")
+        # get the latest message from user
+        latest_message = tracker.latest_message.get('text')
 
-        return []
+        # get users symptoms
+        symptoms = tracker.get_slot("symptom_list")
+
+        # check for symptoms 
+        if symptoms is None:
+            symptoms = []
+        
+        # add current sypmtom to symptoms list or state already noted
+        if latest_message not in symptoms:
+            symptoms.append(latest_message)   
+        else:
+            dispatcher.utter_message("आपने पहले से ही इस " + latest_message + " लक्षण ों का उल्लेख किया है")         
+
+        # update slot for future use
+        SlotSet("symptom_list", symptoms)
+
+        # get suggestion of next symptom 
+        suggested_symptoms = diagnosis_object.symptoms_suggester()
+
+        # list for suggested symptoms
+        already_suggested = []
+
+        # check wether symptoms are already suggested or not
+        for symp in suggested_symptoms:
+            if symp not in symptoms and symp not in symptoms_suggested_so_far:
+                already_suggested.append(symp)
+            else:
+                symptoms_suggested_so_far.append(symp)
+        
+        # if no suggestion are made so far 
+        if len(already_suggested) == 0:
+            dispatcher.utter_template('utter_alternative')
+            return [SlotSet("symptom_list", symptoms)]
+
+        # Reason : we want to update user for highest confidence symptoms already_suggested
+
+        # Create response buttons
+        buttons = [{"title": "हाँ", "payload": already_suggested[0]},{"title":"नहीं", "payload": "/deny"}]
+
+        # Send message
+        dispatcher.utter_message("आपने कहा था कि आपको : " + latest_message)
+        dispatcher.utter_button_message("क्या आपके "+ already_suggested[0] + " भी है?", buttons)
+        
+
+
+        return [SlotSet("symptom_list", symptoms)]
+        
+
+    
+
+class ActioDiagnosis(Action):
+
+    def name(self) -> Text:
+        return "action_diagnosis"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        pass
