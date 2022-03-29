@@ -8,3 +8,34 @@ stories:
   - action: utter_greet
   - intent: mood_great
   - action: utter_happy
+
+- story: disease predictor
+  steps:
+  - intent: symptoms
+  - action: action_symptoms_tracker
+
+- story: deny path
+  steps:
+  - intent: deny
+  - action: utter_alternative
+
+- story: goodbye path
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: thanks path
+  steps:
+  - intent: thanks
+  - action: utter_thanks
+
+- story: affirm path
+  steps:
+  - intent: affirm
+  - action: utter_affirm
+
+
+- story: end path
+  steps:
+  - intent: end
+  - action: action_diagnosis

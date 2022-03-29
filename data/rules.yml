@@ -17,22 +17,22 @@ rules:
   - intent: goodbye
   - action: utter_goodbye
 
-- rule: when user provide symptoms
+# - rule: when user provide symptoms
+#   steps:
+#   - intent: symptoms
+#   - action: action_symptoms_tracker
+
+- rule: when user provides symptoms confirmation
   steps:
-  - intent: symptoms
-  - action: action_symptoms_tracker
+  - intent: affirm
+  - action: utter_affirm
 
- - rule: when user provides symptoms confirmation
-   steps:
-   - intent: affirm
-   - action: utter_affirm
+- rule: when user denies symptoms confirmation
+  steps:
+  - intent: deny
+  - action: utter_alternative
 
- - rule: when user denies symptoms confirmation
-   steps:
-   - intent: deny
-   - action: utter_deny
-
- - rule: respond positively when the user says thank you
-   steps:
-   - intent: thanks
-   - action: utter_thanks
+- rule: respond positively when the user says thank you
+  steps:
+  - intent: thanks
+  - action: utter_thanks

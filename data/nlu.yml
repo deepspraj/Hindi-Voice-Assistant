@@ -49,6 +49,13 @@ nlu:
     - अद्भुत, धन्यवाद
     - हाँ धन्यवाद!
 
+- intent: end
+  examples: |
+    - समाप्ति
+    - अंत 
+    - समाप्त 
+    - खत्म
+
 - intent: affirm
   examples: |
     - हाँ

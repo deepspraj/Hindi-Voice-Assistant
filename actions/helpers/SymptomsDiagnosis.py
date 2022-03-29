@@ -116,7 +116,7 @@ class SymptomsDiagnosis:
         test_data = self.__symptoms_vectorizer(user_symptoms)
 
         # perform predict on test_data on ml model 
-        predicted_disease = self.Y['Disease'][self.knn.predict([test_data])]
+        predicted_disease = self.Y[self.knn.predict([test_data])]
         
         return predicted_disease
 
