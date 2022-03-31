@@ -12,6 +12,8 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 from SymptomsDiagnosis import SymptomsDiagnosis
+import pickle 
+from numpy import array
 
 # class ActionHelloWorld(Action):
 #
@@ -28,10 +30,7 @@ from SymptomsDiagnosis import SymptomsDiagnosis
 
 
 diagnosis_object = SymptomsDiagnosis()
-diagnosis_object.train()
-
 symptoms_suggested_so_far = []
-
 
 class ActionSymptomsTracker(Action):
 
@@ -58,7 +57,8 @@ class ActionSymptomsTracker(Action):
         
         # add current sypmtom to symptoms list or state already noted
         if latest_message not in symptoms and not entity_traced:
-            symptoms.append(latest_message)   
+            if latest_message != "":
+                symptoms.append(latest_message)   
         elif entity_traced and latest_message in symptoms:
             dispatcher.utter_message("आपने पहले से ही इस " + symptoms[-1] + " लक्षण ों का उल्लेख किया है")         
 
@@ -75,7 +75,7 @@ class ActionSymptomsTracker(Action):
         for symp in suggested_symptoms:
             if symp not in symptoms and symp not in symptoms_suggested_so_far:
                 already_suggested.append(symp)
-        
+                
         # if no suggestion are made so far 
         if len(already_suggested) == 0:
             dispatcher.utter_template('utter_alternative')
@@ -90,7 +90,7 @@ class ActionSymptomsTracker(Action):
 
         # Send message
         dispatcher.utter_message("आपने कहा था कि आपको : " + symptoms[-1] + " है |")
-        dispatcher.utter_button_message("क्या आपके "+ str(already_suggested[0]) + " भी है?", buttons)
+        dispatcher.utter_button_message("क्या आपको "+ str(already_suggested[0]) + " के लक्षण भी है?", buttons)
         
 
 
@@ -110,19 +110,9 @@ class ActionDiagnosis(Action):
         symptoms = tracker.get_slot("symptom_list")
 
         # Get diagnosis
-        diag = diagnosis_object.predict(symptoms)
-
-        diseases = {
-            2 : 'जॉन्डिस',
-            0: 'ब्रोन्कियल अस्थमा',
-            1: 'माइग्रेन',
-            4: 'यूरिनरी ट्रैक्ट इन्फेक्शन',
-            3: 'हार्ट अटैक',
-            }
-
-        print(diag)
+        diag = diagnosis_object.predict_proba(symptoms)
 
         # Send message
-        dispatcher.utter_message("हमारे मॉडल ने " + str(diseases[diag]) + " रोग की भविष्यवाणी की है |" )
+        dispatcher.utter_message("हमारे मॉडल ने " + diag + " रोग की भविष्यवाणी की है |" )
 
         return []
