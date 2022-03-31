@@ -1,0 +1,2 @@
+As the columns i.e independent variable are in Indic language and matplotlib.pyplot does not support Indic languages.
+So, image of confusion matrix contains square boxes for the names but still we can derive conclusion by matching the variable patterns.
