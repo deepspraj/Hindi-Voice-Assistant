@@ -13,7 +13,7 @@
 
 <script>
 import axios from "axios";
-import { VueBotUI } from "vue-bot-ui";
+import { VueBotUI } from "vue-bot-ui-audio-p";
 import HomeTemplate from "@/components/HomeTemplate.vue";
 
 export default {
@@ -79,7 +79,7 @@ export default {
               {
                 text: response[i]['buttons'][1]['title'],
                 value: response[i]['buttons'][1]['payload'],
-                action: 'postback' // Request to API
+                action: 'postback'
               }],
         });
         }
@@ -88,12 +88,9 @@ export default {
                 agent: "bot",
                 type: "text",
                 text: response[i]['text'],
-	});
-	}
+      });
+      }
 		this.botTyping = false;
-    if (value.text=="हाँ"){
-        value.text = response[i]['buttons'][0]['payload'];
-    }
   }
       });
     },
