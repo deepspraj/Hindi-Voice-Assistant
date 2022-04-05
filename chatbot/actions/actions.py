@@ -14,6 +14,7 @@ from rasa_sdk.events import SlotSet
 from SymptomsDiagnosis import SymptomsDiagnosis
 import pickle 
 from numpy import array
+from time import sleep
 
 # class ActionHelloWorld(Action):
 #
@@ -88,11 +89,9 @@ class ActionSymptomsTracker(Action):
         # Create response buttons
         buttons = [{"title": "जी हाँ " + str(already_suggested[0]) +" भी है", "payload": str(already_suggested[0])},{"title":"जी नहीं", "payload": ""}]
 
-        # Send message
-        dispatcher.utter_message("आपने कहा था कि आपको : " + symptoms[-1] + " है |")
+        # Send response to ui
+        # dispatcher.utter_message("आपने कहा था कि आपको : " + symptoms[-1] + " है |")
         dispatcher.utter_button_message("क्या आपको "+ str(already_suggested[0]) + " के लक्षण भी है?", buttons)
-        
-
 
         return [SlotSet("symptom_list", symptoms)]
         

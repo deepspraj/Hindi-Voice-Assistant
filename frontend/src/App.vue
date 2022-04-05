@@ -42,7 +42,7 @@ export default {
       this.messages.push({
         agent: "bot",
         type: "text",
-        text: "Hello!! I'm Your Hindi Voice Assistant. How can I help you?",
+        text: "🖋️ बीमारी की भविष्यवाणी करने के लिए कहे - मैं अपनी बीमारी जानना चाहता हूँ 🙏🙏"
       });
   },
   methods: {
@@ -54,8 +54,6 @@ export default {
       });
 
       this.botTyping = true;
-
-      console.log(value.text)		
 
       axios.post('http://localhost:5005/webhooks/rest/webhook', { 'message': value.text }).then((res) => {
         var response = res['data'];
@@ -82,6 +80,8 @@ export default {
                 action: 'postback'
               }],
         });
+        let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        console.log(sleep)
         }
         else {
             this.messages.push({
@@ -89,8 +89,12 @@ export default {
                 type: "text",
                 text: response[i]['text'],
       });
+      let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+      console.log(sleep)
       }
-		this.botTyping = false;
+      let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+      console.log(sleep)
+    this.botTyping = false;
   }
       });
     },
