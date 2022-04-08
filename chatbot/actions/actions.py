@@ -59,7 +59,7 @@ class ActionSymptomsTracker(Action):
         # add current sypmtom to symptoms list or state already noted
         if latest_message not in symptoms and not entity_traced:
             if latest_message != "":
-                symptoms.append(latest_message)   
+                symptoms.append(latest_message)
         elif entity_traced and latest_message in symptoms:
             dispatcher.utter_message("आपने पहले से ही इस " + symptoms[-1] + " लक्षण ों का उल्लेख किया है")         
 
@@ -114,4 +114,9 @@ class ActionDiagnosis(Action):
         # Send message
         dispatcher.utter_message("हमारे मॉडल ने " + diag + " रोग की भविष्यवाणी की है |" )
 
-        return []
+        SlotSet("symptom_list", [])
+
+        # debugging 
+        print("Slot updated", tracker.get_slot("symptom_list"))
+
+        return [SlotSet("symptom_list", [])]
